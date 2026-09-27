@@ -1,0 +1,17 @@
+name: learning-lab
+on: [push, pull_request]
+jobs:
+  infrastructure:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m venv .venv
+      - run: bash scripts/setup.sh
+      - run: .venv/bin/python -m ruff format --check .
+      - run: .venv/bin/python -m pytest -q
